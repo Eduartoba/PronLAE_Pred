@@ -2,14 +2,12 @@ name: Build Android APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -25,11 +23,14 @@ jobs:
       - name: Accept Android SDK licenses
         run: yes | sdkmanager --licenses
 
-      - name: Install Android build-tools (AIDL)
+      - name: Install Android build-tools
         run: yes | sdkmanager "build-tools;34.0.0"
 
       - name: Clean Buildozer cache
         run: rm -rf $HOME/.buildozer
+
+      - name: Clean Buildozer SDK folder
+        run: rm -rf $HOME/.buildozer/android/platform/android-sdk
 
       - name: Install dependencies
         run: |
@@ -40,10 +41,9 @@ jobs:
         env:
           ANDROIDSDK: ${{ env.ANDROID_SDK_ROOT }}
           ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_ROOT }}
-        run: |
-          buildozer android debug
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+        run: buildozer android debug
 
-      # Opcional: sube el APK como artefacto
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
