@@ -20,4 +20,5 @@ android.minapi = 21
 android.arch = armeabi-v7a
 android.logcat = 1
 android.debug = 1
+android.sdk_path = $ANDROID_SDK_ROOT
 android.python3 = True
